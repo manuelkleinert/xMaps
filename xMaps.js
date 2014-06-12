@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.1 - 12.06.2014
+© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.2 - 12.06.2014
 #####################################################################################################################*/
 
 (function($){
