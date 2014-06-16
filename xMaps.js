@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.2 - 12.06.2014
+© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.2 - 16.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -44,12 +44,12 @@ var xMaps = function(options) {
         address:false,
 		lat:0,
 		long: 0,
-		zoom: 10,
-		ZoomControl: true,
-		PanControl: true,
-		MapTypeControl: true,
-		ScaleControl: true,
-		StreetView: true,
+		zoom: 10,               // Zoom 1-18
+		zoomControl: true,      // Zoom Controller
+		panControl: true,       // Navigations Controller
+		mapTypeControl: true,   // Controller for Style
+        mapType:"ROADMAP",      // Style (HYBRID/ROADMAP/SATELLITE/TERRAIN)
+		streetView: true,       // StreetView Controller
         showMarker:true,
         markerIcon: false,
         markerTitle: false,
@@ -93,22 +93,21 @@ xMaps.prototype = {
 		var self = this;
 		// set map options
 		this.mapOptions = {
-			zoomControl: self.ZoomControl,
-			panControl: self.PanControl,
-			mapTypeControl: self.MapTypeControl,
-			scaleControl: self.ScaleControl,
-			streetViewControl: self.StreetView,
+			zoomControl: self.zoomControl,
+			panControl: self.panControl,
+			mapTypeControl: self.mapTypeControl,
+			streetViewControl: self.streetView,
 			zoom: self.zoom,
 			center: self.location,
-			mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style']
+			mapTypeId: eval("google.maps.MapTypeId."+self.mapType)
 		};
         this.map = new google.maps.Map(this.obj,this.mapOptions);
 	},
     
     setStyle:function(){
         if(this.style){
-            var self = this;		
-            this.styledMap = new google.maps.StyledMapType(self.style,{name:"Styled Map"});
+            var self = this;
+            this.styledMap = new google.maps.StyledMapType(eval(self.style),{name:"Styled Map"});
             this.map.mapTypes.set('map_style', self.styledMap);
             this.map.setMapTypeId('map_style');
         }
