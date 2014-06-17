@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.2 - 16.06.2014
+© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.3 - 17.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -43,7 +43,9 @@ var xMaps = function(options) {
 		obj: false,
         address:false,
 		lat:0,
-		long: 0,
+		lng: 0,
+        top: 0,                 // Map move top
+        left:0,                 // Map move left
 		zoom: 10,               // Zoom 1-18
 		zoomControl: true,      // Zoom Controller
 		panControl: true,       // Navigations Controller
@@ -56,7 +58,8 @@ var xMaps = function(options) {
 		markerContent: false,
         markerOpen:false,
 		showInfoWindow: true,
-		style: false
+		style: false,           // Map Style
+        center:false            // Center Top Left Addition [Top,left]
 	}, options);
 	
     // Options to Attributs
@@ -81,13 +84,13 @@ xMaps.prototype = {
 		this.setLocation(function(){
             self.setMap();
 		    self.setStyle();
-		    self.setMarker(); 
+		    self.setMarker();
+            self.centerMap();
         })
         
 		if(fx){fx();}
 	},
 
-	
 	
 	setMap:function(){
 		var self = this;
@@ -117,13 +120,11 @@ xMaps.prototype = {
         if(this.showMarker){
             var self = this;
             var markerSetting = new Array();
- 
-            markerSetting['position'] = this.location;
+            markerSetting['position'] = new google.maps.LatLng(this.lat,this.lng);
+            markerSetting['map'] = this.map;
             if(this.markerIcon){markerSetting['icon']=this.markerIcon;}
             if(this.markerTitle){markerSetting['title']=this.markerTitle;}
-            
             this.marker = new google.maps.Marker(markerSetting);
-            this.marker.setMap(this.map);
         }
         
         if(this.markerContent){
@@ -146,12 +147,14 @@ xMaps.prototype = {
             this.geocoder = new google.maps.Geocoder();
             this.geocoder.geocode({'address': self.address}
             , function(results, status) {
-                
                 if (status == google.maps.GeocoderStatus.OK) {
                     self.location = results[0].geometry.location;
                 }else{
-                    self.location = new google.maps.LatLng(self.lat,self.long);
+                    self.location = new google.maps.LatLng(self.lat,self.lng);
                 }
+                self.lat = self.location.lat()
+                self.lng = self.location.lng()
+                
                 if(fx){fx();}
             });
         }else{
@@ -161,8 +164,11 @@ xMaps.prototype = {
     },
 	
 	centerMap:function(){
-		var self = this;
-		this.map.setCenter(self.marker.getPosition());
+        if(this.center){
+            var self = this;
+            var center = this.location;
+            this.map.setCenter(new google.maps.LatLng(self.lat+(self.top/1000), self.lng+(self.left/1000)));
+        }
 	}
 
 }
