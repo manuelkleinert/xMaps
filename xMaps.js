@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.3 - 17.06.2014
+© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.4 - 17.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -167,7 +167,7 @@ xMaps.prototype = {
         if(this.center){
             var self = this;
             var center = this.location;
-            this.map.setCenter(new google.maps.LatLng(self.lat+(self.top/1000), self.lng+(self.left/1000)));
+            this.map.setCenter(new google.maps.LatLng(self.lat+(self.top/1000), self.lng-(self.left/1000)));
         }
 	}
 
