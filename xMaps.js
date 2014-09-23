@@ -100,6 +100,7 @@ xMaps.prototype = {
 			panControl: self.panControl,
 			mapTypeControl: self.mapTypeControl,
 			streetViewControl: self.streetView,
+			//travelMode: google.maps.TravelMode.TRANSIT, Evt. Fix
 			zoom: self.zoom,
 			center: self.location,
 			mapTypeId: eval("google.maps.MapTypeId."+self.mapType)
