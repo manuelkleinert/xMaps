@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.4 - 17.06.2014
+© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.5 - 15.12.2014
 #####################################################################################################################*/
 
 (function($){
@@ -48,6 +48,7 @@ var xMaps = function(options) {
         left:0,                 // Map move left
 		zoom: 10,               // Zoom 1-18
 		zoomControl: true,      // Zoom Controller
+		scrollWheel: true,      // Map Scroll (Zoom)
 		panControl: true,       // Navigations Controller
 		mapTypeControl: true,   // Controller for Style
         mapType:"ROADMAP",      // Style (HYBRID/ROADMAP/SATELLITE/TERRAIN)
@@ -101,6 +102,7 @@ xMaps.prototype = {
 			mapTypeControl: self.mapTypeControl,
 			streetViewControl: self.streetView,
 			//travelMode: google.maps.TravelMode.TRANSIT, Evt. Fix
+			scrollwheel: self.scrollWheel,
 			zoom: self.zoom,
 			center: self.location,
 			mapTypeId: eval("google.maps.MapTypeId."+self.mapType)
