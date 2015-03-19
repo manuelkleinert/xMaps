@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.5 - 15.12.2014
+© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.6 - 19.03.2015
 #####################################################################################################################*/
 
 (function($){
@@ -41,26 +41,27 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
 var xMaps = function(options) {
 	this.options = $.extend({
 		obj: false,
-        address:false,
-		lat:0,
-		lng: 0,
+        address:false,          // Adress
+		lat:0,                  // Latitude
+		lng: 0,                 // Longitude
         top: 0,                 // Map move top
         left:0,                 // Map move left
 		zoom: 10,               // Zoom 1-18
 		zoomControl: true,      // Zoom Controller
 		scrollWheel: true,      // Map Scroll (Zoom)
+        draggable:true,         // Map Drag (Fade)
 		panControl: true,       // Navigations Controller
 		mapTypeControl: true,   // Controller for Style
         mapType:"ROADMAP",      // Style (HYBRID/ROADMAP/SATELLITE/TERRAIN)
 		streetView: true,       // StreetView Controller
-        showMarker:true,
-        markerIcon: false,
-        markerTitle: false,
-		markerContent: false,
-        markerOpen:false,
-		showInfoWindow: true,
+        showMarker:true,        // Show Marker
+        markerIcon: false,      // Add other Icon
+        markerTitle: false,     // Titel
+		markerContent: false,   // Text
+        markerOpen:false,       // Text open on start
 		style: false,           // Map Style
-        center:false            // Center Top Left Addition [Top,left]
+        center:false,           // Center Top Left Addition [Top,left]
+        routes:[]               // Route
 	}, options);
 	
     // Options to Attributs
@@ -68,11 +69,13 @@ var xMaps = function(options) {
 	
     // Attributs
 	this.geocoder = new google.maps.Geocoder();
+    this.directionsService = new google.maps.DirectionsService();
 	this.location;
 	this.styledMap;
 	this.map;
 	this.mapOptions;
 	this.marker;
+    this.colourArray = ['navy', 'red', 'grey', 'fuchsia', 'black', 'white', 'lime', 'maroon', 'purple', 'aqua', 'green', 'silver', 'olive', 'blue', 'yellow', 'teal'];
     
     this.init();
     
@@ -87,6 +90,7 @@ xMaps.prototype = {
 		    self.setStyle();
 		    self.setMarker();
             self.centerMap();
+            self.generateRequests();
         })
         
 		if(fx){fx();}
@@ -102,6 +106,7 @@ xMaps.prototype = {
 			mapTypeControl: self.mapTypeControl,
 			streetViewControl: self.streetView,
 			//travelMode: google.maps.TravelMode.TRANSIT, Evt. Fix
+            draggable:self.draggable,
 			scrollwheel: self.scrollWheel,
 			zoom: self.zoom,
 			center: self.location,
@@ -172,6 +177,119 @@ xMaps.prototype = {
             var center = this.location;
             this.map.setCenter(new google.maps.LatLng(self.lat+(self.top/1000), self.lng-(self.left/1000)));
         }
-	}
+	},
+    
+    setRoute:function(route){
+        this.routes.push(route);
+    },
+    
+    generateRequests:function(){
+        var self = this;
+        var i = 0;
+
+        var checkRoute = function(route,statusIndex,start,end,waypts){
+            
+            if(route.length == statusIndex){
+                var request = {
+                    origin: start,
+                    destination: end,
+                    waypoints: waypts,
+                    optimizeWaypoints: true,
+                    travelMode: google.maps.TravelMode.DRIVING
+                };
+        
+                self.directionsService.route(request, function(result, status){
+                    
+                    var directionsRenderer = new google.maps.DirectionsRenderer();
+                    directionsRenderer.setMap(self.map);
+            
+                   /*directionsRenderer.setOptions({
+                        suppressInfoWindows: true,
+                        polylineOptions: {
+                            strokeWeight: 4,
+                            strokeOpacity: 0.8,
+                            strokeColor: self.colourArray[i]
+                        },
+                        markerOptions:{
+                            icon:{
+                                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                                scale: 3,
+                                strokeColor: self.colourArray[i]
+                            }
+                        }
+                    });*/
+                    
+                    directionsRenderer.setDirections(result);
+ 
+                    i++;
+                });
+            }
+        }
+        
+    
+        $.each(this.routes,function(routeIndex,route){
+            
+            var waypts = [];
+            var start = false;
+            var end = false;
+            var statusIndex = 0;
+            
+            $.each(route,function(index,ort){
+                
+                if(ort["name"]){
+                    
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({'address':ort["name"]}, function(results, status) {
+                        // Start
+                        if(index == 0){
+                            if (status == google.maps.GeocoderStatus.OK) {
+                                start = results[0].geometry.location;
+                                statusIndex++;
+                                checkRoute(route,statusIndex,start,end,waypts);
+                            }
+                        }
+                            
+                        // Waypoints
+                        if(index != 0 && index != route.length-1){
+                            if (status == google.maps.GeocoderStatus.OK) {
+                                waypts.push({
+                                    location:results[0].geometry.location,
+                                stopover:true});
+                                statusIndex++;
+                                checkRoute(route,statusIndex,start,end,waypts);
+                            }
+                        }
+                            
+                        // Ende
+                        if(index == route.length-1){
+                            if (status == google.maps.GeocoderStatus.OK) {
+                                end = results[0].geometry.location;
+                                statusIndex++;
+                                checkRoute(route,statusIndex,start,end,waypts);
+
+                                /*var pos = new google.maps.LatLng(end.k,end.D);
+                                
+                                 var marker = new google.maps.Marker({
+                                      position: pos,
+                                      map: self.map
+                                 });    
+        
+                                var infowindow = new google.maps.InfoWindow();
+                                infowindow.setContent("<div class='infodiv'>Test</div>");
+                                infowindow.open(self.map,marker);
+                                google.maps.event.addListener(marker,'click', function() {
+                                    infowindow.open(self.map,this);
+                                });*/
+                                
+                            }
+                        }
+                    
+                        
+                    });
+                }
+            });
+        });
+        
+    }
 
 }
