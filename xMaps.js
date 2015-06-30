@@ -1,5 +1,30 @@
 /*#####################################################################################################################
-© xPager - Manuel Kleinert - v 1.1.6 - 23.06.2015
+                                                                                                              
+                    PPPPPPPPPPPPPPPPP                                                                              
+                    P::::::::::::::::P                                                                             
+                    P::::::PPPPPP:::::P                                                                            
+                    PP:::::P     P:::::P                                                                           
+xxxxxxx      xxxxxxx  P::::P     P:::::Paaaaaaaaaaaaa     ggggggggg   ggggg    eeeeeeeeeeee    rrrrr   rrrrrrrrr   
+ x:::::x    x:::::x   P::::P     P:::::Pa::::::::::::a   g:::::::::ggg::::g  ee::::::::::::ee  r::::rrr:::::::::r  
+  x:::::x  x:::::x    P::::PPPPPP:::::P aaaaaaaaa:::::a g:::::::::::::::::g e::::::eeeee:::::eer:::::::::::::::::r 
+   x:::::xx:::::x     P:::::::::::::PP           a::::ag::::::ggggg::::::gge::::::e     e:::::err::::::rrrrr::::::r
+    x::::::::::x      P::::PPPPPPPPP      aaaaaaa:::::ag:::::g     g:::::g e:::::::eeeee::::::e r:::::r     r:::::r
+     x::::::::x       P::::P            aa::::::::::::ag:::::g     g:::::g e:::::::::::::::::e  r:::::r     rrrrrrr
+     x::::::::x       P::::P           a::::aaaa::::::ag:::::g     g:::::g e::::::eeeeeeeeeee   r:::::r            
+    x::::::::::x      P::::P          a::::a    a:::::ag::::::g    g:::::g e:::::::e            r:::::r            
+   x:::::xx:::::x   PP::::::PP        a::::a    a:::::ag:::::::ggggg:::::g e::::::::e           r:::::r            
+  x:::::x  x:::::x  P::::::::P        a:::::aaaa::::::a g::::::::::::::::g  e::::::::eeeeeeee   r:::::r            
+ x:::::x    x:::::x P::::::::P         a::::::::::aa:::a gg::::::::::::::g   ee:::::::::::::e   r:::::r            
+xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     eeeeeeeeeeeeee   rrrrrrr            
+                                                                   g:::::g                                         
+                                                       gggggg      g:::::g                                         
+                                                       g:::::gg   gg:::::g                                         
+                                                        g::::::ggg:::::::g                                         
+                                                         gg:::::::::::::g                                          
+                                                           ggg::::::ggg                                            
+                                                              gggggg
+															  
+© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 2.0.1 - 30.06.2015
 #####################################################################################################################*/
 
 (function($){
