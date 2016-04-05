@@ -1,30 +1,30 @@
 /*#####################################################################################################################
-                                                                                                              
-                    PPPPPPPPPPPPPPPPP                                                                              
-                    P::::::::::::::::P                                                                             
-                    P::::::PPPPPP:::::P                                                                            
-                    PP:::::P     P:::::P                                                                           
-xxxxxxx      xxxxxxx  P::::P     P:::::Paaaaaaaaaaaaa     ggggggggg   ggggg    eeeeeeeeeeee    rrrrr   rrrrrrrrr   
- x:::::x    x:::::x   P::::P     P:::::Pa::::::::::::a   g:::::::::ggg::::g  ee::::::::::::ee  r::::rrr:::::::::r  
-  x:::::x  x:::::x    P::::PPPPPP:::::P aaaaaaaaa:::::a g:::::::::::::::::g e::::::eeeee:::::eer:::::::::::::::::r 
+
+                    PPPPPPPPPPPPPPPPP
+                    P::::::::::::::::P
+                    P::::::PPPPPP:::::P
+                    PP:::::P     P:::::P
+xxxxxxx      xxxxxxx  P::::P     P:::::Paaaaaaaaaaaaa     ggggggggg   ggggg    eeeeeeeeeeee    rrrrr   rrrrrrrrr
+ x:::::x    x:::::x   P::::P     P:::::Pa::::::::::::a   g:::::::::ggg::::g  ee::::::::::::ee  r::::rrr:::::::::r
+  x:::::x  x:::::x    P::::PPPPPP:::::P aaaaaaaaa:::::a g:::::::::::::::::g e::::::eeeee:::::eer:::::::::::::::::r
    x:::::xx:::::x     P:::::::::::::PP           a::::ag::::::ggggg::::::gge::::::e     e:::::err::::::rrrrr::::::r
     x::::::::::x      P::::PPPPPPPPP      aaaaaaa:::::ag:::::g     g:::::g e:::::::eeeee::::::e r:::::r     r:::::r
      x::::::::x       P::::P            aa::::::::::::ag:::::g     g:::::g e:::::::::::::::::e  r:::::r     rrrrrrr
-     x::::::::x       P::::P           a::::aaaa::::::ag:::::g     g:::::g e::::::eeeeeeeeeee   r:::::r            
-    x::::::::::x      P::::P          a::::a    a:::::ag::::::g    g:::::g e:::::::e            r:::::r            
-   x:::::xx:::::x   PP::::::PP        a::::a    a:::::ag:::::::ggggg:::::g e::::::::e           r:::::r            
-  x:::::x  x:::::x  P::::::::P        a:::::aaaa::::::a g::::::::::::::::g  e::::::::eeeeeeee   r:::::r            
- x:::::x    x:::::x P::::::::P         a::::::::::aa:::a gg::::::::::::::g   ee:::::::::::::e   r:::::r            
-xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     eeeeeeeeeeeeee   rrrrrrr            
-                                                                   g:::::g                                         
-                                                       gggggg      g:::::g                                         
-                                                       g:::::gg   gg:::::g                                         
-                                                        g::::::ggg:::::::g                                         
-                                                         gg:::::::::::::g                                          
-                                                           ggg::::::ggg                                            
+     x::::::::x       P::::P           a::::aaaa::::::ag:::::g     g:::::g e::::::eeeeeeeeeee   r:::::r
+    x::::::::::x      P::::P          a::::a    a:::::ag::::::g    g:::::g e:::::::e            r:::::r
+   x:::::xx:::::x   PP::::::PP        a::::a    a:::::ag:::::::ggggg:::::g e::::::::e           r:::::r
+  x:::::x  x:::::x  P::::::::P        a:::::aaaa::::::a g::::::::::::::::g  e::::::::eeeeeeee   r:::::r
+ x:::::x    x:::::x P::::::::P         a::::::::::aa:::a gg::::::::::::::g   ee:::::::::::::e   r:::::r
+xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     eeeeeeeeeeeeee   rrrrrrr
+                                                                   g:::::g
+                                                       gggggg      g:::::g
+                                                       g:::::gg   gg:::::g
+                                                        g::::::ggg:::::::g
+                                                         gg:::::::::::::g
+                                                           ggg::::::ggg
                                                               gggggg
-															  
-© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 2.0.1 - 30.06.2015
+
+© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 2.2.0 - 05.04.2016
 #####################################################################################################################*/
 
 (function($){
@@ -64,18 +64,19 @@ var xMaps = function(options) {
         center:false,           // Center Top Left Addition [Top,left]
         mobileDraggable:false   // Mobile Fade
 	}, options);
-	
+
     // Options to Attributs
 	for(var name in this.options){eval("this."+name+"=this.options."+name);}
-    
+
     // Set Obj
 	if(this.options.obj){
-		this.obj =  this.options.obj[0];	
+		this.obj =  this.options.obj[0];
 	}
 
     // Attributs
 	this.geocoder = new google.maps.Geocoder();
     this.directionsService = new google.maps.DirectionsService();
+    this.directionsDisplay = new google.maps.DirectionsRenderer();
 	this.location = false;
 	this.styledMap;
 	this.map;
@@ -83,16 +84,16 @@ var xMaps = function(options) {
     this.content = "Error";
 	this.markerArray = [];
     this.ready;
-    
+
     this.init();
-    
+
 }
 
 // Functions
 xMaps.prototype = {
     init:function(){
         var self = this;
-        
+
         if(!this.mobileDraggable){
             if(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
               this.draggable = false;
@@ -100,37 +101,37 @@ xMaps.prototype = {
         }
 
         this.setLocation(function(){
-            google.maps.event.addDomListener(window,'load',self.setMap()); 
+            google.maps.event.addDomListener(window,'load',self.setMap());
         });
     },
-    
+
     ready:function(fx){
         this.ready = fx;
     },
 
     setLocation:function(fx){
         var self = this;
-        
+
         // Geo Daten
         if(this.geolocation && navigator.geolocation){
-            
+
             this.getLocationByGeolocation(function(pos){
                 self.location = pos;
                 self.lat = self.location.lat();
                 self.lng = self.location.lng();
                 if(fx){fx();}
             });
-            
+
         // Adresse
         }else if(this.address){
-            
+
             this.getLocationByAdress(this.address,function(pos){
                 self.location = pos;
                 self.lat = self.location.lat();
                 self.lng = self.location.lng();
                 if(fx){fx();}
             });
-            
+
         // Lat und Lng
         }else{
             this.getLocationByLatLng(this.lat,this.lng,function(pos){
@@ -141,14 +142,14 @@ xMaps.prototype = {
             });
         }
     },
-    
+
     getLocationByGeolocation:function(fx){
         navigator.geolocation.getCurrentPosition(function(position){
             var pos = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
             if(fx){fx(pos);}
         });
     },
-    
+
     getLocationByAdress:function(address,fx){
         var self = this;
         this.geocoder = new google.maps.Geocoder();
@@ -162,16 +163,16 @@ xMaps.prototype = {
                 if(fx){fx(pos);}
             });
     },
-    
+
     getLocationByLatLng:function(lat,lng,fx){
         var self = this;
         var pos = new google.maps.LatLng(lat,lng);
-        if(fx){fx(pos);}   
+        if(fx){fx(pos);}
     },
-    
+
     setMap:function(){
 		var self = this;
-        
+
         this.mapOptions = {
        	    zoomControl:        this.zoomControl,
 			panControl:         this.panControl,
@@ -183,18 +184,19 @@ xMaps.prototype = {
             center:             this.location,
             mapTypeId:          eval("google.maps.MapTypeId."+self.mapType)
 		};
-        
+
         this.map = new google.maps.Map(this.obj,this.mapOptions);
-        
+        this.directionsDisplay.setMap(this.map);
+
         // Set Style
         this.setStyle();
-        
+
         // ready
-        
+
         if(this.ready){
             this.ready();
         }
-        
+
         // Set Center Markter
         this.setMarker({
             lat:                 this.lat,
@@ -210,7 +212,7 @@ xMaps.prototype = {
             disableAutoPan:      false
         });
 	},
-    
+
     setStyle:function(){
         if(this.style){
             var self = this;
@@ -219,10 +221,27 @@ xMaps.prototype = {
             this.map.setMapTypeId('map_style');
         }
 	},
-    
+
     setMarker:function(options){
         this.markerArray.push(new xMapsMarker(this,options));
-	}
+	},
+
+    setRoute(origin,destination,travelMode,waypoints){
+        var self = this;
+        this.request = {
+            origin:"Meggen Schweiz",
+            destination: "Sursee Schweiz",
+            waypoints: waypoints,
+            provideRouteAlternatives: true,
+            avoidTolls: true,
+            travelMode: google.maps.DirectionsTravelMode[travelMode]
+        };
+        this.directionsService.route(this.request, function(result, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                self.directionsDisplay.setDirections(result);
+            }
+        });
+    }
 }
 
 
@@ -242,69 +261,68 @@ var xMapsMarker = function(obj,options){
         markerContent: false,
         disableAutoPan:true
     }, options);
-    
+
     // Options to Attributs
 	for(var name in this.options){eval("this."+name+"=this.options."+name);}
-    
+
     this.marker;
     this.location;
-    
+
     this.init();
 }
 
 xMapsMarker.prototype = {
-    
+
     init:function(){
         var self = this;
 
         this.setLocation(function(){
-            self.setMarker();
-        });  
+            if(self.showMarker){
+                self.setMarker();
+            }
+        });
     },
-    
+
     setLocation:function(fx){
         var self = this;
-        
+
         // Adress
         if(this.address){
             this.obj.getLocationByAdress(this.address,function(pos){
                 self.location = pos;
                 if(fx){fx();}
             });
-            
+
         // Lat und Lng
         }else if(this.lat && this.lng){
             this.obj.getLocationByLatLng(this.lat,this.lng,function(pos){
                 self.location = pos;
                 if(fx){fx();}
-            });  
+            });
         }
     },
-    
+
     setMarker:function(){
-        
+
         var self = this;
-        
+
         this.infowindow = new google.maps.InfoWindow({
             content: "<h3>"+this.markerTitle+"</h3>"+this.markerContent,
             disableAutoPan: this.disableAutoPan
         });
-        
+
         this.marker = new google.maps.Marker({
             position: this.location,
             icon:this.markerIcon,
             map: this.obj.map
         });
-        
+
         google.maps.event.addListener(this.marker,'click', function() {
             self.infowindow.open(self.obj.map,self.marker);
         });
-        
+
         if(this.markerOpen){
             this.infowindow.open(this.obj.map,this.marker);
         }
-        
-        this.obj.map.panBy(this.top,this.left);
-        
     }
 }
