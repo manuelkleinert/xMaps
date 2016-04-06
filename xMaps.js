@@ -24,8 +24,9 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg
                                                               gggggg
 
-© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 2.2.0 - 05.04.2016
+© xPager - xMaps - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 2.2.1 - 06.04.2016
 #####################################################################################################################*/
+
 
 (function($){
 	$.fn.xMaps = function(options){
@@ -105,11 +106,11 @@ xMaps.prototype = {
         });
     },
 
-    ready:function(fx){
-        this.ready = fx;
+    ready:function(fn){
+        this.ready = fn;
     },
 
-    setLocation:function(fx){
+    setLocation:function(fn){
         var self = this;
 
         // Geo Daten
@@ -119,7 +120,7 @@ xMaps.prototype = {
                 self.location = pos;
                 self.lat = self.location.lat();
                 self.lng = self.location.lng();
-                if(fx){fx();}
+                if(fn){fn();}
             });
 
         // Adresse
@@ -129,7 +130,7 @@ xMaps.prototype = {
                 self.location = pos;
                 self.lat = self.location.lat();
                 self.lng = self.location.lng();
-                if(fx){fx();}
+                if(fn){fn();}
             });
 
         // Lat und Lng
@@ -138,19 +139,19 @@ xMaps.prototype = {
                 self.location = pos;
                 self.lat = self.location.lat();
                 self.lng = self.location.lng();
-                if(fx){fx();}
+                if(fn){fn();}
             });
         }
     },
 
-    getLocationByGeolocation:function(fx){
+    getLocationByGeolocation:function(fn){
         navigator.geolocation.getCurrentPosition(function(position){
             var pos = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-            if(fx){fx(pos);}
+            if(fn){fn(pos);}
         });
     },
 
-    getLocationByAdress:function(address,fx){
+    getLocationByAdress:function(address,fn){
         var self = this;
         this.geocoder = new google.maps.Geocoder();
             this.geocoder.geocode({'address':address}
@@ -160,14 +161,14 @@ xMaps.prototype = {
                 }else{
                     var pos = new google.maps.LatLng(self.lat,self.lng);
                 }
-                if(fx){fx(pos);}
+                if(fn){fn(pos);}
             });
     },
 
-    getLocationByLatLng:function(lat,lng,fx){
+    getLocationByLatLng:function(lat,lng,fn){
         var self = this;
         var pos = new google.maps.LatLng(lat,lng);
-        if(fx){fx(pos);}
+        if(fn){fn(pos);}
     },
 
     setMap:function(){
@@ -226,24 +227,17 @@ xMaps.prototype = {
         this.markerArray.push(new xMapsMarker(this,options));
 	},
 
-    setRoute(origin,destination,travelMode,waypoints){
+    setRoute(options,fn){
         var self = this;
-        this.request = {
-            origin:"Meggen Schweiz",
-            destination: "Sursee Schweiz",
-            waypoints: waypoints,
-            provideRouteAlternatives: true,
-            avoidTolls: true,
-            travelMode: google.maps.DirectionsTravelMode[travelMode]
-        };
-        this.directionsService.route(this.request, function(result, status) {
+        options.travelMode = google.maps.DirectionsTravelMode[options.travelMode];
+        this.directionsService.route(options, function(result, status) {
             if (status == google.maps.DirectionsStatus.OK) {
                 self.directionsDisplay.setDirections(result);
+                if(fn){fn();}
             }
         });
     }
 }
-
 
 var xMapsMarker = function(obj,options){
 
@@ -283,21 +277,21 @@ xMapsMarker.prototype = {
         });
     },
 
-    setLocation:function(fx){
+    setLocation:function(fn){
         var self = this;
 
         // Adress
         if(this.address){
             this.obj.getLocationByAdress(this.address,function(pos){
                 self.location = pos;
-                if(fx){fx();}
+                if(fn){fn();}
             });
 
         // Lat und Lng
         }else if(this.lat && this.lng){
             this.obj.getLocationByLatLng(this.lat,this.lng,function(pos){
                 self.location = pos;
-                if(fx){fx();}
+                if(fn){fn();}
             });
         }
     },
