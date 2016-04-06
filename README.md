@@ -9,14 +9,29 @@ $(document).ready(function(){
   var Map =  new xMaps({/*Options*/});
   
   Map.ready(function(){
-    // route
-    this.setRoute("Meggen Schweiz","Sursee Schweiz","DRIVING",[
-    {
-      location:"Sembach Schweiz",
-      stopover:false
-    },{
-      location:"Emmen Schweiz",
-      stopover:true
-  }]);
+    
+    // Add Route
+    this.setRoute({origin:"Meggen Schweiz",destination:"Sursee Schweiz",travelMode:"DRIVING",waypoints:[
+        {
+          location:"Sembach Schweiz",
+          stopover:false
+        },{
+          location:"Emmen Schweiz",
+          stopover:true
+        }
+    ]})
+    
+    // Add Marker
+    this.setMarker({
+        address:'',
+        lat:'',
+        lng:'',
+        markerIcon:'',
+        showMarker:true,
+        markerOpen:true,
+        disableAutoPan:true,
+        markerTitle: 'Titel',
+        markerContent: 'Text'
+    });
   
 });
